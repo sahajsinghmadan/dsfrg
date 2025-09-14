@@ -1,24 +1,59 @@
 {
-  "name": "metro-rail-management-system",
+  "name": "kochi-metro-management-system",
   "version": "1.0.0",
-  "description": "A comprehensive metro rail management system for operations, monitoring, and administration",
-  "main": "index.html",
-  "scripts": {
-    "dev": "npx serve -s . -l 3000",
-    "build": "mkdir -p dist && cp -r * dist/ && echo 'Build completed successfully'",
-    "start": "npx serve -s . -l 3000",
-    "preview": "npx serve -s dist -l 4173"
+  "private": true,
+  "description": "A comprehensive metro rail management system built with React",
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "react-redux": "^9.0.4",
+    "react-helmet-async": "^2.0.4",
+    "react-hook-form": "^7.48.2",
+    "react-query": "^3.39.3",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1",
+    "qrcode": "^1.5.3",
+    "html2canvas": "^1.4.1",
+    "date-fns": "^3.0.6",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.16"
   },
-  "keywords": [
-    "metro",
-    "rail",
-    "management",
-    "transportation",
-    "operations"
-  ],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
-    "serve": "^14.2.1"
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/leaflet": "^1.9.8",
+    "@types/qrcode": "^1.5.5",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.8",
+    "typescript": "^5.2.2",
+    "tailwindcss": "^3.3.6",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
