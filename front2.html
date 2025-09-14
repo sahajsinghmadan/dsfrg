@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kochi Metro Rail Limited</title>
+  <!-- Fonts & AOS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <style>
+    :root {
+      --primary: #003366;
+      --secondary: #0077b6;
+      --accent: #00b4d8;
+      --light: #f2f5f7;
+      --white: #ffffff;
+      --transition: 0.3s ease;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--primary);
+      scroll-behavior: smooth;
+      line-height: 1.6;
+    }
+    /* ===== Navbar ===== */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav .logo {
+      display: flex;
+      align-items: center;
+    }
+    nav .logo img {
+      height: 50px;
+      margin-right: 10px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+    }
+    nav ul li {
+      margin: 0 10px;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+    nav ul li a:hover {
+      color: var(--accent);
+    }
+    .hamburger {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    @media(max-width:768px){
+      nav ul {
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background: var(--primary);
+        width: 100%;
+        display: none;
+      }
+      nav ul.show {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+      }
+    }
+
+    /* ===== Hero Section ===== */
+    header {
+      height: 85vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(to right, #cce6ff, #e6f2ff);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    #heroQuote {
+      font-size: 2.9rem;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .header-lang-btns button,
+    .btn-group button,
+    .submit-btn {
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      margin: 5px;
+    }
+    .btn-group button:hover,
+    .header-lang-btns button:hover,
+    .submit-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* ===== Why Metro Section ===== */
+    #why {
+      padding: 60px 20px;
+      text-align: center;
+      background: #e6f2ff;
+    }
+    #why h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    #why p {
+      max-width: 800px;
+      margin: 0 auto 40px;
+      font-size: 1.1rem;
+    }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      color: var(--primary);
+      width: 260px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+      overflow: hidden;
+    }
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 12px;
+      font-size: 1.2rem;
+    }
+    .card p {
+      margin: 0 12px 16px;
+      font-size: 0.95rem;
+    }
+    .card:hover {
+      transform: translateY(-5px) scale(1.03);
+    }
+    @media(max-width:768px){
+      .cards-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+    }
+    footer a {
+      color: var(--accent);
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <img src="logo1.jpg" alt="Logo">
+      <h1>Kochi Metro</h1>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#why">Why Metro</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="hero">
+    <div class="content">
+      <h1 data-aos="fade-up">Connecting the city with speed, comfort and style</h1>
+      <p id="heroQuote" data-aos="fade-up" data-aos-delay="200"></p>
+      <div class="header-lang-btns" data-aos="fade-up" data-aos-delay="400">
+        <button onclick="setQuoteLanguage(0)">English</button>
+        <button onclick="setQuoteLanguage(1)">Malayalam</button>
+        <button onclick="setQuoteLanguage(2)">Hindi</button>
+      </div>
+      <div class="btn-group" data-aos="fade-up" data-aos-delay="600">
+        <button><i class="fas fa-user"></i> Customer Login</button>
+        <button><i class="fas fa-user-shield"></i> Admin Login</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Why Kochi Metro Section -->
+  <section id="why">
+    <h2 data-aos="fade-up">Why Travel by Kochi Metro?</h2>
+    <p data-aos="fade-up" data-aos-delay="200">Kochi Metro provides a fast, safe, and eco-friendly way to travel across the city. It reduces traffic congestion, saves time, and connects key business and tourist areas efficiently.</p>
+    <div class="cards-container">
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <img src="https://th.bing.com/th/id/OIP.1EnP2NLoG5i2OHL4VvbGuQHaE8?w=268&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Fast Travel">
+        <h3>Fast Travel</h3>
+        <p>Reach your destination quickly and efficiently, avoiding city traffic jams.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <img src="https://th.bing.com/th/id/OIP.UFfW9JNv2XjqFGXhcV492AHaEK?w=284&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Safe & Reliable">
+        <h3>Safe & Reliable</h3>
+        <p>Travel in a secure environment with state-of-the-art surveillance and facilities.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <img src="https://cdn.pixabay.com/photo/2020/06/01/17/35/green-5253063_1280.jpg" alt="Eco-Friendly">
+        <h3>Eco-Friendly</h3>
+        <p>Reduce your carbon footprint by choosing a sustainable mode of transportation.</p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="400">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdKOyyDEjSgsPV5w-wOvZSgUH4-8enXFx1Og&s" alt="Convenient">
+        <h3>Convenient</h3>
+        <p>Well-connected stations and regular schedules make commuting hassle-free.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <p>&copy; 2025 Kochi Metro Rail Limited</p>
+    <p>Follow us on 
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a> | 
+      <a href="#"><i class="fab fa-twitter"></i> Twitter</a> | 
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+    </p>
+    <p>Email: info@kochimetro.org | Phone: +91 484 1234567</p>
+  </footer>
+
+  <!-- AOS & Script -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    const quotes = [
+      "Namaskaram! Welcome to Kochi Metro.",
+      "നമസ്കാരം! കൊച്ചി മെട്രോയിലേക്ക് നിങ്ങളുടെ സ്വാഗതം.",
+      "नमस्कार! कोच्चि मेट्रो में आपका स्वागत है।"
+    ];
+    let quoteIndex = 0;
+    function rotateQuotes() {
+      document.getElementById("heroQuote").textContent = quotes[quoteIndex];
+      quoteIndex = (quoteIndex + 1) % quotes.length;
+    }
+    setInterval(rotateQuotes, 5000);
+    rotateQuotes();
+    function setQuoteLanguage(index) {
+      quoteIndex = index;
+      document.getElementById("heroQuote").textContent = quotes[index];
+    }
+    function toggleMenu() {
+      document.querySelector("nav ul").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

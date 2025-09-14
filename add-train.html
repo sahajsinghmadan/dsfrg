@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add Train - Kochi Metro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .add-train-container {
+    background: #fff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .add-train-container h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #2563eb;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  input, select {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  input:focus, select:focus {
+    border-color: #2563eb;
+    outline: none;
+  }
+
+  button[type="submit"] {
+    background-color: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #1e40af;
+  }
+
+  .back-btn {
+    margin-top: 12px;
+    background: #e5e7eb;
+    color: #1f2937;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .back-btn:hover {
+    background: #d1d5db;
+  }
+</style>
+</head>
+<body>
+  <div class="add-train-container">
+    <h1><i class="fas fa-train"></i> Add New Train</h1>
+    <form id="trainForm">
+      <label>Train Name:</label>
+      <input type="text" id="trainName" placeholder="Enter Train Name" required />
+
+      <label>Train Route:</label>
+      <input type="text" id="trainRoute" placeholder="Enter Route (e.g., Aluva - Tripunithura)" required />
+
+      <label>Driver Name:</label>
+      <input type="text" id="driverName" placeholder="Enter Driver Name" required />
+
+      <label>Next Station:</label>
+      <input type="text" id="nextStation" placeholder="Enter Next Station" required />
+
+      <label>Status:</label>
+      <select id="trainStatus" required>
+        <option value="">Select Status</option>
+        <option value="active">Active</option>
+        <option value="delayed">Delayed</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+
+      <button type="submit"><i class="fas fa-plus"></i> Add Train</button>
+    </form>
+    <button class="back-btn" onclick="window.location.href='train-operations.html'">
+      <i class="fas fa-arrow-left"></i> Back to Operations
+    </button>
+  </div>
+
+  <script>
+    document.getElementById('trainForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const train = {
+        id: 'K' + Math.floor(Math.random() * 900 + 100),
+        name: document.getElementById('trainName').value,
+        route: document.getElementById('trainRoute').value,
+        driver: document.getElementById('driverName').value,
+        next: document.getElementById('nextStation').value,
+        status: document.getElementById('trainStatus').value
+      };
+
+      let trains = JSON.parse(localStorage.getItem('trains') || '[]');
+      trains.push(train);
+      localStorage.setItem('trains', JSON.stringify(trains));
+
+      alert('Train added successfully!');
+      window.location.href = 'train-operations.html';
+    });
+  </script>
+</body>
+</html>

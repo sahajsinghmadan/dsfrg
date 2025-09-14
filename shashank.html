@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kochi Metro - Live Map</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --surface: #ffffff;
+        --bg: #f9fafb;
+        --text: #1e293b;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --radius: 12px;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--surface);
+        padding: 0.75rem 1.5rem;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      header h1 {
+        font-size: 1.25rem;
+        margin: 0;
+        color: var(--primary);
+      }
+      header .actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      button {
+        border: none;
+        cursor: pointer;
+        border-radius: var(--radius);
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        transition: 0.3s;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 260px 1fr 300px;
+        gap: 1rem;
+        padding: 1rem;
+        align-items: stretch;
+      }
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar,
+        .right-panel,
+        #map {
+          height: auto;
+        }
+      }
+      .sidebar,
+      .right-panel {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+        height: 650px; /* slightly smaller than before */
+        overflow-y: auto;
+      }
+      .sidebar h2,
+      .right-panel h2 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      .station-list {
+        max-height: 100%;
+        overflow-y: auto;
+      }
+      .station-item {
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
+      .station-item:hover {
+        background: var(--primary);
+        color: #fff;
+      }
+      #map {
+        height: 650px; /* slightly smaller than before */
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .card {
+        background: #f1f5f9;
+        border-radius: var(--radius);
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+      .card h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+      .card span {
+        font-weight: bold;
+        color: var(--primary);
+      }
+      .train-icon {
+        font-size: 22px;
+      }
+      .station-label {
+        background: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #2563eb;
+        font-weight: bold;
+        border: 1px solid #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><i class="fas fa-train"></i> Kochi Metro Live Map</h1>
+      <div class="actions">
+        <button id="refreshBtn" class="btn-primary">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <button><i class="fas fa-moon"></i></button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>Stations</h2>
+        <div class="station-list">
+          <select id="stationSelect"></select>
+          <ul id="stationUL"></ul>
+        </div>
+      </aside>
+
+      <section id="map"></section>
+
+      <aside class="right-panel">
+        <h2>Live Status</h2>
+        <div class="card">
+          <h3>Trains Running: <span>1</span></h3>
+        </div>
+        <div class="card">
+          <h3>On-Time: <span>1</span></h3>
+        </div>
+        <div class="card">
+          <h3>Delayed: <span>0</span></h3>
+        </div>
+        <div class="card">
+          <h3>Active Staff: <span>48</span></h3>
+        </div>
+        <hr />
+        <h2>Selected Station</h2>
+        <div id="stationDetails">Click a station to view details.</div>
+      </aside>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const stationData = [
+          { name: "Aluva", lat: 10.1114, lng: 76.3516 },
+          { name: "Pulinchodu", lat: 10.1018, lng: 76.3482 },
+          { name: "Companypady", lat: 10.0925, lng: 76.345 },
+          { name: "Ambattukavu", lat: 10.0833, lng: 76.3395 },
+          { name: "Muttom", lat: 10.0734, lng: 76.3363 },
+          { name: "Kalamassery", lat: 10.0593, lng: 76.326 },
+          { name: "Cochin University (CUSAT)", lat: 10.0486, lng: 76.3208 },
+          { name: "Pathadipalam", lat: 10.0375, lng: 76.3128 },
+          { name: "Edapally", lat: 10.0259, lng: 76.3087 },
+          { name: "Changampuzha Park", lat: 10.016, lng: 76.3041 },
+          { name: "Palarivattom", lat: 10.0102, lng: 76.2999 },
+          { name: "JLN Stadium", lat: 9.9993, lng: 76.2986 },
+          { name: "Kaloor", lat: 9.9872, lng: 76.2952 },
+          { name: "Town Hall", lat: 9.9816, lng: 76.2906 },
+          { name: "M.G. Road", lat: 9.9762, lng: 76.2857 },
+          { name: "Maharaja's College", lat: 9.9698, lng: 76.2807 },
+          { name: "Ernakulam South", lat: 9.9574, lng: 76.2765 },
+          { name: "Kadavanthra", lat: 9.9507, lng: 76.2762 },
+          { name: "Elamkulam", lat: 9.9411, lng: 76.276 },
+          { name: "Vyttila", lat: 9.9323, lng: 76.28 },
+          { name: "Thaikoodam", lat: 9.9244, lng: 76.2953 },
+          { name: "Petta (Pettah)", lat: 9.9182, lng: 76.3025 },
+          { name: "Vadakkekotta", lat: 9.917, lng: 76.3105 },
+          { name: "SN Junction", lat: 9.916, lng: 76.3185 },
+          { name: "Tripunithura (Terminal)", lat: 9.9141, lng: 76.3262 },
+        ];
+
+        const map = L.map("map").setView([20.5937, 78.9629], 5);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
+
+        const polyCoords = stationData.map((s) => [s.lat, s.lng]);
+        L.polyline(polyCoords, {
+          color: "#2563eb",
+          weight: 4,
+          opacity: 0.8,
+        }).addTo(map);
+        const bounds = L.latLngBounds(polyCoords);
+
+        const stationSelect = document.getElementById("stationSelect");
+        const stationUL = document.getElementById("stationUL");
+        const stationDetails = document.getElementById("stationDetails");
+        const markers = [];
+
+        function getDistance(lat1, lng1, lat2, lng2) {
+          const R = 6371;
+          const dLat = ((lat2 - lat1) * Math.PI) / 180;
+          const dLng = ((lng2 - lng1) * Math.PI) / 180;
+          const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos((lat1 * Math.PI) / 180) *
+              Math.cos((lat2 * Math.PI) / 180) *
+              Math.sin(dLng / 2) ** 2;
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+        }
+
+        function getNextTrainTime(index) {
+          if (index === 0) return 2;
+          const prev = stationData[index - 1];
+          const curr = stationData[index];
+          const dist = getDistance(prev.lat, prev.lng, curr.lat, curr.lng);
+          const speed = 30;
+          return Math.max(1, Math.round((dist / speed) * 60));
+        }
+
+        function showStationDetails(idx) {
+          const s = stationData[idx];
+          map.setView([s.lat, s.lng], 16, { animate: true });
+          markers[idx].openPopup();
+          const nextTrain = getNextTrainTime(idx);
+          stationDetails.innerHTML = `
+        <h3>${s.name}</h3>
+        <p>Status: <span style="color:green;">Operational</span></p>
+        <p>Next Train: <strong>${nextTrain} min</strong></p>
+      `;
+        }
+
+        // Add markers after zoom-in
+        function addMarkers() {
+          stationData.forEach((s, i) => {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = `${i + 1}. ${s.name}`;
+            stationSelect.appendChild(opt);
+
+            const li = document.createElement("li");
+            li.className = "station-item";
+            li.textContent = `${i + 1}. ${s.name}`;
+            stationUL.appendChild(li);
+
+            const marker = L.circleMarker([s.lat, s.lng], {
+              radius: 6,
+              fillColor: "#2563eb",
+              color: "#000",
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 1,
+            }).addTo(map);
+
+            marker.bindTooltip(s.name, {
+              permanent: true,
+              direction: "right",
+              offset: [10, 0],
+              className: "station-label",
+            });
+            markers.push(marker);
+
+            li.addEventListener("click", () => showStationDetails(i));
+          });
+        }
+
+        // Fly zoom from India -> metro
+        setTimeout(() => {
+          map.flyToBounds(bounds.pad(0.05), { duration: 5 });
+          map.once("moveend", addMarkers);
+        }, 1000);
+
+        // Train animation
+        const trainIcon = L.divIcon({
+          className: "train-icon",
+          html: "🚆",
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        });
+        let trainMarker = L.marker(polyCoords[0], { icon: trainIcon }).addTo(
+          map
+        );
+        let segmentIndex = 0;
+        let t = 0;
+        let direction = 1;
+
+        function animateTrain() {
+          const current = polyCoords[segmentIndex];
+          const next = polyCoords[segmentIndex + direction];
+          if (!next) {
+            direction *= -1;
+            requestAnimationFrame(animateTrain);
+            return;
+          }
+
+          const dist = getDistance(current[0], current[1], next[0], next[1]);
+          const lat = current[0] + (next[0] - current[0]) * t;
+          const lng = current[1] + (next[1] - current[1]) * t;
+          trainMarker.setLatLng([lat, lng]);
+
+          t += dist * 0.004; // fast train
+          if (t >= 1) {
+            t = 0;
+            segmentIndex += direction;
+          }
+
+          requestAnimationFrame(animateTrain);
+        }
+        animateTrain();
+
+        document.getElementById("refreshBtn").addEventListener("click", () => {
+          map.flyToBounds(bounds.pad(0.05), { duration: 3 });
+        });
+      });
+    </script>
+  </body>
+</html>
